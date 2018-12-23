@@ -24,15 +24,14 @@ COPY target /
 # adjust permissions
 RUN \
   chmod 750 /docker-entrypoint.sh && \
-  chmod 750 /docker-startup/dummy-app.sh && \
-  chmod 750 /docker-startup/run-startup.sh && \
-  ln -s /docker-startup/dummy-app.sh /docker-startup/app-to-run
+  chmod 750 /docker-startup/run-app.sh && \
+  chmod 750 /docker-startup/run-startup.sh
 
 # add starting the application to .bashrc of root to support the 'run-and-enter' mode
 # and let it terminate before the opened shell exits
 RUN \
   echo 'if [[ "${RUN_DOCKER_APP}" -eq "1" ]]; then' >> /root/.bashrc && \
-  echo '  /docker-startup/app-to-run > /var/log/app-stdout.log 2> /var/log/app-stderr.log &' >> /root/.bashrc && \
+  echo '  /docker-startup/run-app.sh > /var/log/app-stdout.log 2> /var/log/app-stderr.log &' >> /root/.bashrc && \
   echo '  export DOCKER_APP_PID=$!' >> /root/.bashrc && \
   echo '  trap "kill ${DOCKER_APP_PID}" EXIT' >> /root/.bashrc && \
   echo '  echo "The application was started, its stdout/stderr is logged to /var/log/app-[stdout|stderr].log."' >> /root/.bashrc && \

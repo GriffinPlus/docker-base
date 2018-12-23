@@ -6,7 +6,7 @@
 if [ "$1" = 'run' ]; then
     /docker-startup/run-startup.sh "$@"
     if [ $? -ne 0 ]; then exit $?; fi
-    exec /docker-startup/app-to-run
+    exec /docker-startup/run-app.sh
 elif [ "$1" = 'run-and-enter' ]; then
     /docker-startup/run-startup.sh "$@"
     if [ $? -ne 0 ]; then exit $?; fi
