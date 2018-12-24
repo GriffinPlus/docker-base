@@ -24,7 +24,6 @@ COPY target /
 # adjust permissions
 RUN \
   chmod 750 /docker-entrypoint.sh && \
-  chmod 750 /docker-startup/run-app.sh && \
   chmod 750 /docker-startup/run-startup.sh
 
 # add starting the application to .bashrc of root to support the 'run-and-enter' mode

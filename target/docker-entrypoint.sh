@@ -6,10 +6,12 @@
 if [ "$1" = 'run' ]; then
     /docker-startup/run-startup.sh "$@"
     if [ $? -ne 0 ]; then exit $?; fi
+    chmod 750 /docker-startup/run-app.sh
     exec /docker-startup/run-app.sh
 elif [ "$1" = 'run-and-enter' ]; then
     /docker-startup/run-startup.sh "$@"
     if [ $? -ne 0 ]; then exit $?; fi
+    chmod 750 /docker-startup/run-app.sh
     export RUN_DOCKER_APP=1
     exec /bin/bash
 elif [ $# -gt 0 ]; then
