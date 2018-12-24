@@ -25,6 +25,18 @@ The *Griffin+ Container Startup System* (see below for details) contains a simpl
 
 Default: `4`
 
+## For Users (of derived Images)
+
+The startup system described below supports the commands `run` (default) and `run-and-enter` that lets the container start up and run all services, optionally opening an interactive shell (bash) in the container. This is primarily useful for debugging purposes.
+
+```
+# start service shipped in the container...
+docker run griffinplus/base run
+
+# ...or simply ('run' is used by default)
+docker run griffinplus/base
+```
+
 ## For Developers
 
 ### Creating a Custom Image based on this Image
@@ -59,9 +71,9 @@ The image contains the following Python packages that can be used within the plu
 
 ##### Logging
 
-The logging system supports logging to stdout/stderr, file and syslog depending on the use case. If the container is started with the command `run` or `run-and-enter` messages are logged to stdio and to file or syslog. Logging to syslog is chosen, if `/dev/log` is mounted into the container. Any message written to syslog is associated with facility *local5* by default. If syslog is not available, messages are logged to file (`/var/log/cc-startup.log`) instead. If the container is started with some custom command (i.e. *not* `run` or `run-and-enter`), logging to stdio is disabled to avoid mixing up logged messages and text that needs to be consumed by the caller.
+The logging system supports logging to stdout/stderr, file and syslog depending on the use case. If the container is started with the command `run` or `run-and-enter` messages are logged to stdio and to file or syslog. Logging to syslog is chosen, if `/dev/log` is mounted into the container. Any message written to syslog is associated with facility *local5* by default. If syslog is not available, messages are logged to file (`/var/log/gp_startup.log`) instead. If the container is started with some custom command (i.e. *not* `run` or `run-and-enter`), logging to stdio is disabled to avoid mixing up logged messages and text that needs to be consumed by the caller.
 
-The logging system is implemented in the `cc_log` module. It contains the `Log` class and a few static methods to write formatted messages of different severity levels to the log:
+The logging system is implemented in the `gp_log` module. It contains the `Log` class and a few static methods to write formatted messages of different severity levels to the log:
 ```
 - Log.write_error(format, *args)   : Level 1, writes to stderr / syslog priority Error (3)
 - Log.write_warning(format, *args) : Level 2, writes to stdout / syslog priority Warning (4)
@@ -74,7 +86,7 @@ The `Log.set_verbosity(level)` method sets the verbosity of the log. Setting the
 
 ##### Helper Functions
 
-The *Griffin+ Container Startup System* is shipped with some helper functions that ease writing the plugins by providing common functionality. The helper functions are implemented in the `cc_helpers` module. The following functions are provided:
+The *Griffin+ Container Startup System* is shipped with some helper functions that ease writing the plugins by providing common functionality. The helper functions are implemented in the `gp_helpers` module. The following functions are provided:
 - accessing environment variables
   - `get_env_setting_bool(var_name, default_value = None)`
   - `get_env_setting_integer(var_name, default_value = None, min = None, max = None)`
@@ -110,7 +122,7 @@ The *Griffin+ Container Startup System* is shipped with some helper functions th
 
 ##### Command Processor Plugins
 
-Essentially a command processor plugin contains a class that derives from the `CommandProcessor` class (part of the framework, module *cc_cmdproc*) and overrides a method adding its own command handling code. The command processor plugins are deployed in `/docker-startup/10-initial.startup/cc_startup/plugins/`. The name of a plugin file must follow the `cc_cmdproc_*.py` pattern to be recognized by the plugin factory.
+Essentially a command processor plugin contains a class that derives from the `CommandProcessor` class (part of the framework, module *gp_cmdproc*) and overrides a method adding its own command handling code. The command processor plugins are deployed in `/docker-startup/10-initial.startup/gp_startup/plugins/`. The name of a plugin file must follow the `gp_cmdproc_*.py` pattern to be recognized by the plugin factory.
 
 Command processor plugins are loaded and executed by file name in ascending alphabetical order by invoking the `CommandProcessor.process()` method of a plugin. This method must return an exit code, if the command was handled. If exit code `0` is returned, other command processor plugins are called as well. This enables writing startup code that is deployed using multiple plugins. If a command processor plugin returns a code that is not `0` other command processor plugins are skipped and the startup system exits gracefully with that exit code. If no command processor was able to handle the specified command, the startup system exits with error 127 (common shell error code for 'command not found').
 
@@ -120,7 +132,7 @@ The default implementation of `CommandProcessor.process()` conditions the comman
 
 ###### Command Handler Methods
 
-A command handler method must return an integer value that becomes the return value of `CommandProcessor.process()`. If the return value of `CommandProcessor.process()` is `None` (no appropriate command handler was found) or `0` (the command handler completed successfully) other command processor plugins are called. Processing is aborted, if a handler and therefore `CommandProcessor.process()` returns with some other code. This code becomes the exit code of the startup system and is in turn returned from the docker container. An alternative way of setting an error code is raising an exception that derives from the `ExitCodeError` class (module *cc_errors*). The following exception classes are already defined in this module:
+A command handler method must return an integer value that becomes the return value of `CommandProcessor.process()`. If the return value of `CommandProcessor.process()` is `None` (no appropriate command handler was found) or `0` (the command handler completed successfully) other command processor plugins are called. Processing is aborted, if a handler and therefore `CommandProcessor.process()` returns with some other code. This code becomes the exit code of the startup system and is in turn returned from the docker container. An alternative way of setting an error code is raising an exception that derives from the `ExitCodeError` class (module *gp_errors*). The following exception classes are already defined in this module:
 
 | Exception                   | Exit Code  | Description                                                         |
 | :-------------------------- | :--------: | :------------------------------------------------------------------ |
@@ -153,13 +165,13 @@ NamedArgument(name, from_stdin = False, min_occurrence = 0, max_occurrence = 1)
 A simple command processor plugin looks like this:
 
 ```
-# /docker-startup/10-initial.startup/cc_startup/plugins/cc_cmdproc_sample.py
+# /docker-startup/10-initial.startup/gp_startup/plugins/gp_cmdproc_sample.py
 
 import os
 
-from ..cc_log import Log
-from ..cc_cmdproc import CommandProcessor, PositionalArgument, NamedArgument
-from ..cc_errors import GeneralError, CommandLineArgumentError, FileNotFoundError, IoError, ConfigurationError, EXIT_CODE_SUCCESS
+from ..gp_log import Log
+from ..gp_cmdproc import CommandProcessor, PositionalArgument, NamedArgument
+from ..gp_errors import GeneralError, CommandLineArgumentError, FileNotFoundError, IoError, ConfigurationError, EXIT_CODE_SUCCESS
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -196,7 +208,7 @@ class SampleCommandProcessor(CommandProcessor):
     # -------------------------------------------------------------------------------------------
 
     def run(self, pos_args, named_args):
-        Log.write_note("Configuring services in the container before supervisord starts up...")
+        Log.write_note("Configuring service(s) in the container before starting up...")
         return EXIT_CODE_SUCCESS
 
     # -------------------------------------------------------------------------------------------
@@ -224,7 +236,7 @@ This command processor plugin will handle commands like the following:
 7) echo "topsecret" | docker run -i  griffinplus/base cmd2 arg1 --my-option=abc --my-option=xyz
 ```
 
-Commands 1 and 2 initialize the container invoking the `run()` method and start *supervisord* to spawn services, if the handler returns with exit code 0 (`EXIT_CODE_SUCCESS`). In addition to that, command 2 opens a shell at the end, so the container can be inspected which is quite useful when debugging. The positional arguments (`pos_args`) are `['run']` respectively `['run-and-enter'])` in these cases. Named arguments were not defined at the time the handler was registered, so `named_args` is simply `{}`.
+Commands 1 and 2 initialize the container invoking the `run()` method and start the service shipped in the container, if the handler returns with exit code 0 (`EXIT_CODE_SUCCESS`). In addition to that, command 2 opens a shell at the end, so the container can be inspected which is quite useful when debugging. The positional arguments (`pos_args`) are `['run']` respectively `['run-and-enter'])` in these cases. Named arguments were not defined at the time the handler was registered, so `named_args` is simply `{}`.
 
 Command 3 and 4 run the `handle_command1()` method with `pos_args` being `['cmd1', 'arg1']` respectively `['cmd1', 'arg1', 'xxx', 'yyy']`. Since the handler was registered without named arguments, `named_args` is simply `{}`.
 
