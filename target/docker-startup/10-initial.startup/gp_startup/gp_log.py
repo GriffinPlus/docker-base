@@ -15,7 +15,7 @@ from syslog import syslog, openlog, closelog, \
                    LOG_KERN, LOG_USER, LOG_MAIL, LOG_DAEMON, LOG_AUTH, LOG_LPR, LOG_NEWS, LOG_UUCP, LOG_CRON, LOG_SYSLOG, \
                    LOG_LOCAL0, LOG_LOCAL1, LOG_LOCAL2, LOG_LOCAL3, LOG_LOCAL4, LOG_LOCAL5, LOG_LOCAL6, LOG_LOCAL7
 
-from .cc_extensions import classproperty
+from .gp_extensions import classproperty
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ class LoggerBase(object):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         raise NotImplementedError("The method is abstract.")
 
@@ -65,7 +65,7 @@ class LoggerBase(object):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         raise NotImplementedError("The method is abstract.")
 
@@ -78,7 +78,7 @@ class LoggerBase(object):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         raise NotImplementedError("The method is abstract.")
 
@@ -91,7 +91,7 @@ class LoggerBase(object):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         raise NotImplementedError("The method is abstract.")
 
@@ -124,7 +124,7 @@ class LoggerBase(object):
     def set_verbosity(self, level):
         """
         Sets the verbosity of startup system.
-   
+
         Args:
             level (int): The minimum severity level of log messages to show:
                 0 = logging disabled 
@@ -133,7 +133,7 @@ class LoggerBase(object):
                 3 = error, warning and note
                 4 = error, warning, note and info
                 5 = all messages (error, warning, note, info, debug)
-        
+
         """
         self._error_level_enabled = level > 0
         self._warning_level_enabled = level > 1
@@ -158,7 +158,7 @@ class StdioLogger(LoggerBase):
         """
         super().__init__()
 
-        
+
     def write_debug(self, text, *args):
         """
         Writes a debug message to the log.
@@ -166,7 +166,7 @@ class StdioLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._debug_level_enabled: return
         message = str(datetime.datetime.now()) + ' [debug] ' + text.format(*args) + '\n'
@@ -180,7 +180,7 @@ class StdioLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._info_level_enabled: return
         message = str(datetime.datetime.now()) + ' [info] ' + text.format(*args) + '\n'
@@ -208,7 +208,7 @@ class StdioLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._warning_level_enabled: return
         message = str(datetime.datetime.now()) + ' [warning] ' + text.format(*args) + '\n'
@@ -222,7 +222,7 @@ class StdioLogger(LoggerBase):
         Args:
             text (str): Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._error_level_enabled: return
         message = str(datetime.datetime.now()) + ' [error] ' + text.format(*args) + '\n'
@@ -250,7 +250,7 @@ class FileLogger(LoggerBase):
 
     """
 
-    __path = None    
+    __path = None
 
     def __init__(self, path):
         """
@@ -263,7 +263,7 @@ class FileLogger(LoggerBase):
         super().__init__()
         self.__path = path
 
-        
+
     def write_debug(self, text, *args):
         """
         Writes a debug message to the log.
@@ -271,7 +271,7 @@ class FileLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._debug_level_enabled: return
         message = str(datetime.datetime.now()) + ' [debug] ' + text.format(*args) + '\n'
@@ -286,7 +286,7 @@ class FileLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._info_level_enabled: return
         message = str(datetime.datetime.now()) + ' [info] ' + text.format(*args) + '\n'
@@ -316,7 +316,7 @@ class FileLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._warning_level_enabled: return
         message = str(datetime.datetime.now()) + ' [warning] ' + text.format(*args) + '\n'
@@ -331,7 +331,7 @@ class FileLogger(LoggerBase):
         Args:
             text (str): Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._error_level_enabled: return
         message = str(datetime.datetime.now()) + ' [error] ' + text.format(*args) + '\n'
@@ -361,7 +361,7 @@ class SyslogLogger(LoggerBase):
         # use the container name as ident
         self.__ident = "Docker ({0})".format(socket.gethostname())
 
-        
+
     def write_debug(self, text, *args):
         """
         Writes a debug message to the log.
@@ -369,7 +369,7 @@ class SyslogLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._debug_level_enabled: return
         message = text.format(*args)
@@ -385,7 +385,7 @@ class SyslogLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._debug_level_enabled: return
         message = text.format(*args)
@@ -417,7 +417,7 @@ class SyslogLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._warning_level_enabled: return
         message = text.format(*args)
@@ -433,7 +433,7 @@ class SyslogLogger(LoggerBase):
         Args:
             text (str): Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         if not self._error_level_enabled: return
         message = text.format(*args)
@@ -451,7 +451,7 @@ class CombinedLogger(LoggerBase):
 
     """
 
-    __loggers = []    
+    __loggers = []
 
     def __init__(self, *loggers):
         """
@@ -464,7 +464,7 @@ class CombinedLogger(LoggerBase):
         super().__init__()
         self.__loggers.extend(loggers)
 
-        
+
     def write_debug(self, text, *args):
         """
         Writes a debug message to the log.
@@ -472,7 +472,7 @@ class CombinedLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         for logger in self.__loggers:
             logger.write_debug(text, *args)
@@ -485,7 +485,7 @@ class CombinedLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         for logger in self.__loggers:
             logger.write_info(text, *args)
@@ -511,7 +511,7 @@ class CombinedLogger(LoggerBase):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         for logger in self.__loggers:
             logger.write_warning(text, *args)
@@ -524,7 +524,7 @@ class CombinedLogger(LoggerBase):
         Args:
             text (str): Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         for logger in self.__loggers:
             logger.write_error(text, *args)
@@ -533,14 +533,14 @@ class CombinedLogger(LoggerBase):
     def set_verbosity(self, level):
         """
         Sets the verbosity of startup system.
-   
+
         Args:
             level (int): The minimum severity level of log messages to show:
                 0 = error only
                 1 = error and warning
                 2 = error, warning and note
                 3 = all messages (error, warning, note, debug)
-        
+
         """
         for logger in self.__loggers:
             logger.set_verbosity(level)
@@ -567,7 +567,7 @@ class CombinedLogger(LoggerBase):
 
         Args:
             logger (LoggerBase) : Logger to add.
-        
+
         """
         if not isinstance(logger, LoggerBase):
             raise ValueError("The specified logger does not derive from 'LoggerBase'.")
@@ -606,7 +606,7 @@ class Log(object):
         """
         Log.__instance = value
 
-    
+
     @staticmethod
     def write_debug(text, *args):
         """
@@ -615,7 +615,7 @@ class Log(object):
         Args:
             text (str)  : Text to write to the log.
             args (list) : Arguments to use when formatting the text.
-        
+
         """
         Log.instance.write_debug(text, *args)
 
@@ -628,7 +628,7 @@ class Log(object):
         Args:
             text (str)   : Text to write to the log.
             args (tuple) : Arguments to use when formatting the text.
-        
+
         """
         Log.instance.write_info(text, *args)
 
@@ -641,7 +641,7 @@ class Log(object):
         Args:
             text (str)  : Text to write to the log.
             args (list) : Arguments to use when formatting the text.
-        
+
         """
         Log.instance.write_note(text, *args)
 
@@ -654,7 +654,7 @@ class Log(object):
         Args:
             text (str)  : Text to write to the log.
             args (list) : Arguments to use when formatting the text.
-        
+
         """
         Log.instance.write_warning(text, *args)
 
@@ -667,7 +667,7 @@ class Log(object):
         Args:
             text (str)  : Text to write to the log.
             args (list) : Arguments to use when formatting the text.
-        
+
         """
         Log.instance.write_error(text, *args)
 

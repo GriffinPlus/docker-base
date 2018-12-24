@@ -9,14 +9,14 @@ import os.path
 import importlib
 from sys import argv
 
-from .cc_extensions import classproperty
-from .cc_helpers import print_error
-from .cc_log import Log, CombinedLogger, StdioLogger, FileLogger, SyslogLogger
+from .gp_extensions import classproperty
+from .gp_helpers import print_error
+from .gp_log import Log, CombinedLogger, StdioLogger, FileLogger, SyslogLogger
 
 # -----------------------------------------------------------------------------------------------------------------------------------------
 
 
-LOG_FILE_PATH = "/var/log/cc-startup.log"
+LOG_FILE_PATH = "/var/log/gp-startup.log"
 
 
 # -----------------------------------------------------------------------------------------------------------------------------------------
@@ -121,8 +121,8 @@ class AppImpl(object):
     def load_command_processors(self):
         """
         Loads command processor plugins brought along via images deriving from the base docker image.
-        The plugins are expected to be located within the cc_startup package in subfolder 'plugins'.
-        The file name of plugin module must start with 'cc_cmdproc_' to be found by this function.
+        The plugins are expected to be located within the gp_startup package in subfolder 'plugins'.
+        The file name of plugin module must start with 'gp_cmdproc_' to be found by this function.
         The plugin module must declare the following things:
         - a global boolean variable named 'enabled' that specified whether the plugin should be run or not.
         - a global string variable named 'processor_name' that specifies the name of the command processor the plugin will set up.
@@ -135,7 +135,7 @@ class AppImpl(object):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         plugins_directory_path = os.path.realpath(os.path.join(script_dir, 'plugins'))
         for file in sorted(os.listdir(plugins_directory_path)):
-            if (file.startswith('cc_cmdproc_') and file.endswith(".py")):
+            if (file.startswith('gp_cmdproc_') and file.endswith(".py")):
                 Log.write_debug('Trying to load command processor plugin module \'{0}\'.'.format(file))
                 module_name = '.plugins.' + '.'.join(file.split('.')[0:-1])
                 module = importlib.import_module(module_name, __package__)

@@ -8,7 +8,7 @@ License: MIT License
 
 import sys
 
-from cc_startup import App
+from gp_startup import App
 
 # run the application
 exitcode = App.run()

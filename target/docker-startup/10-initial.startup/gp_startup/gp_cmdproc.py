@@ -6,9 +6,9 @@ License: MIT License
 
 import abc
 import sys
-from .cc_log import Log
-from .cc_helpers import print_error, readline_if_no_tty
-from .cc_errors import *
+from .gp_log import Log
+from .gp_helpers import print_error, readline_if_no_tty
+from .gp_errors import *
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------

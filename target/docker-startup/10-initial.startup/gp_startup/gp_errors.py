@@ -23,7 +23,7 @@ class ExitCodeError(Exception):
     Attributes:
         exitcode (int) : Code the application should exit with.
         message (str)  : Explanation of the error.
-        
+
     """
 
     def __init__(self):

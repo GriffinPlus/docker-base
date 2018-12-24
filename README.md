@@ -27,7 +27,7 @@ Default: `4`
 
 ## For Users (of derived Images)
 
-The startup system described below supports the commands `run` (default) and `run-and-enter` that lets the container start up and run all services, optionally opening an interactive shell (bash) in the container. This is primarily useful for debugging purposes.
+The startup system described below supports the commands `run` (default) and `run-and-enter` that lets the container start up and run the shipped service, optionally opening an interactive shell (bash) in the container. This is primarily useful for debugging purposes.
 
 ```
 # start service shipped in the container...
@@ -208,7 +208,7 @@ class SampleCommandProcessor(CommandProcessor):
     # -------------------------------------------------------------------------------------------
 
     def run(self, pos_args, named_args):
-        Log.write_note("Configuring service(s) in the container before starting up...")
+        Log.write_note("Configuring service in the container before starting up...")
         return EXIT_CODE_SUCCESS
 
     # -------------------------------------------------------------------------------------------

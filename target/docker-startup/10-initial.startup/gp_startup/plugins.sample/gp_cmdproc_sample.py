@@ -6,9 +6,9 @@ License: MIT License
 
 import os
 
-from ..cc_log import Log
-from ..cc_cmdproc import CommandProcessor, PositionalArgument, NamedArgument
-from ..cc_errors import GeneralError, CommandLineArgumentError, FileNotFoundError, IoError, ConfigurationError, EXIT_CODE_SUCCESS
+from ..gp_log import Log
+from ..gp_cmdproc import CommandProcessor, PositionalArgument, NamedArgument
+from ..gp_errors import GeneralError, CommandLineArgumentError, FileNotFoundError, IoError, ConfigurationError, EXIT_CODE_SUCCESS
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ class SampleCommandProcessor(CommandProcessor):
 
     def run(self, pos_args, named_args):
 
-        Log.write_note("Configuring services in the container before supervisord starts up...")
+        Log.write_note("Configuring services in the container before starting up...")
         return EXIT_CODE_SUCCESS
 
     # -------------------------------------------------------------------------------------------
