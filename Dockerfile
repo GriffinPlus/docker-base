@@ -21,14 +21,12 @@ RUN \
 # copy prepared files into the image
 COPY target /
 
-# adjust permissions
 RUN \
+  # adjust permissions
   chmod 750 /docker-entrypoint.sh && \
-  chmod 750 /docker-startup/run-startup.sh
-
-# add starting the application to .bashrc of root to support the 'run-and-enter' mode
-# and let it terminate before the opened shell exits
-RUN \
+  chmod 750 /docker-startup/run-startup.sh && \
+  # add starting the application to .bashrc of root to support the 'run-and-enter' mode
+  # and let it terminate before the opened shell exits
   echo 'if [[ "${RUN_DOCKER_APP}" -eq "1" ]]; then' >> /root/.bashrc && \
   echo '  /docker-startup/run-app.sh > /var/log/app-stdout.log 2> /var/log/app-stderr.log &' >> /root/.bashrc && \
   echo '  export DOCKER_APP_PID=$!' >> /root/.bashrc && \
