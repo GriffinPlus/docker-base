@@ -1,13 +1,17 @@
 FROM ubuntu:18.04
 MAINTAINER Sascha Falk <sascha@falk-online.eu>
 
-# update image and install additional packages
+# update image and install additional packages required by derived images
+# (iproute2 and iptables are primarily needed to configure IPv6 properly)
 ENV DEBIAN_FRONTEND=noninteractive
 RUN \
   apt-get -y update && \
   apt-get -y install \
     git \
+    iproute2 \
+    iptables \
     lsb-release \
+    nano \
     python3 \
     python3-chardet \
     python3-dnspython \
