@@ -1,0 +1,5 @@
+version: '2'
+
+services:
+  base-supervisor:
+    image: griffinplus/base-supervisor
