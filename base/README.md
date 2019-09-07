@@ -1,6 +1,6 @@
 # Ubuntu 18.04 LTS base image with an extensible Python based startup system
 
-[![Build Status](https://dev.azure.com/griffinplus/docker-base/_apis/build/status/base%20-%20Build%20latest%20Version?branchName=master)](https://dev.azure.com/griffinplus/docker-base/_build/latest?definitionId=5&branchName=master)
+[![Build Status](https://dev.azure.com/griffinplus/Docker%20Images/_apis/build/status/5?branchName=master)](https://dev.azure.com/griffinplus/Docker%20Images/_build/latest?definitionId=5&branchName=master)
 [![Docker Pulls](https://img.shields.io/docker/pulls/griffinplus/base.svg)](https://hub.docker.com/r/griffinplus/base/)
 
 ## Overview
