@@ -12,8 +12,10 @@ variables:
     value: $(dockerhub-password)
 
 # the build is triggered when the docker-base pipeline completes
-# => do not trigger on changes or pull requests
+# => do not trigger on changes
 trigger: none
+
+# do not trigger on pull requests to avoid that tag 'latest' is pushed for pull requests
 pr: none
 
 pool:
