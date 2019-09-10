@@ -7,7 +7,7 @@
 
 This is a Docker base image built on top of the Griffin+ base image. In addition to the *Griffin+ Container Startup System*
 shipped with the base image, this image comes with [supervisord](http://supervisord.org) to run custom services added
-in derived images. For more information about the startup system, please see the documentation of the [Griffin+ base image](https://github.com/GriffinPlus/docker-base).
+in derived images. For more information about the startup system, please see the documentation of the [Griffin+ base image](https://github.com/GriffinPlus/docker-base/tree/master/base).
 
 ## For Developers
 
