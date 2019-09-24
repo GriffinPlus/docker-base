@@ -18,8 +18,8 @@ trigger:
 pr: none
 
 schedules:
-- cron: "0 0 * * 0"
-  displayName: Weekly Sunday Rebuild
+- cron: "0 * * * *"
+  displayName: Test Schedule
   branches:
     include:
     - master
